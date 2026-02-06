@@ -1,0 +1,33 @@
+team:
+    base_policy: org-defaults
+    name: AcademiX team
+    slug: academix-team
+team_guidelines:
+    cicd:
+        - 'Run lint via next lint (extends next/core-web-vitals) (evidence: package.json, .eslintrc.json).'
+        - 'Ensure TypeScript typecheck passes under strict mode (evidence: tsconfig.json, convex/tsconfig.json).'
+        - 'Keep Node runtime compatibility aligned with repo requirement (Node 14.x) (evidence: README.md).'
+        - 'Before merging: ensure Next.js build succeeds and Convex functions typecheck (evidence: package.json, convex/tsconfig.json).'
+    dependencies:
+        - 'Use Convex React bindings and generated API imports (@/convex/_generated/api) (evidence: app/(homepage)/page.tsx, app/[groupId]/page.tsx).'
+        - 'Use Clerk Next.js SDK for auth in frontend/middleware (@clerk/nextjs) (evidence: middleware.ts, providers/convex-client-provider.tsx).'
+        - 'Use Stripe SDK only within server-side Convex actions where secrets are required (evidence: convex/stripe.ts).'
+        - 'Do not add a second auth provider; authentication remains delegated to Clerk (evidence: convex/auth.config.ts).'
+        - 'Do not add a second persistence layer; persistence remains Convex tables/schema unless explicitly approved (evidence: convex/schema.ts, convex/README.md).'
+    general:
+        - 'Follow Next.js App Router conventions: app/ for routes/layouts and components/ for shared UI (evidence: app/layout.tsx, app/(homepage)/page.tsx).'
+        - 'Treat Convex functions as the backend boundary; UI should call generated APIs (api.*) rather than duplicating backend logic (evidence: convex/*, app/(homepage)/page.tsx).'
+        - 'Keep business/data mutations in convex/; UI components should only orchestrate by invoking mutations/actions (evidence: convex/posts.ts, hooks/use-api-mutation.ts).'
+        - 'Prefer server-side enforcement for access control; client-side checks are UX only (evidence: convex/users.ts, middleware.ts).'
+        - 'Repository-first governance: implement only what the codebase indicates is needed (evidence: .claude/CLAUDE.md).'
+    naming_formatting:
+        - 'React components: PascalCase exports; files generally kebab-case or lowercase under components/ (evidence: components/navbar/index.tsx, components/about-side.tsx).'
+        - 'Convex functions: export const <name> = query|mutation|action(...) with verb-first naming (evidence: convex/users.ts, convex/posts.ts).'
+        - 'Use TypeScript strict mode; keep types explicit at boundaries (evidence: tsconfig.json, convex/tsconfig.json).'
+    security:
+        - 'All authenticated operations in convex/ must check ctx.auth.getUserIdentity() before user-scoped access (evidence: convex/users.ts, convex/groups.ts).'
+        - 'Never trust client-provided user identifiers; resolve users via tokenIdentifier/email indexes (evidence: convex/schema.ts, convex/users.ts).'
+        - 'Stripe webhooks must validate stripe-signature and STRIPE_WEBHOOK_SECRET before mutating state (evidence: convex/http.ts, convex/stripe.ts).'
+        - 'Do not widen public routes in middleware without explicit review; default is protect-all (evidence: middleware.ts).'
+        - 'Never commit secrets; use env vars for NEXT_STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, etc. (evidence: convex/stripe.ts).'
+additional_context: ""

@@ -1,0 +1,7 @@
+skills:
+    agent: codex
+    install:
+        - query: typescript
+          skill: typescript-pro
+          source: vercel-labs/agent-skills
+    root: skilld

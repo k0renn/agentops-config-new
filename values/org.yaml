@@ -1,0 +1,31 @@
+org:
+    description: GitHub-hosted org running TypeScript/JavaScript web applications.
+    engineering_defaults:
+        collaboration:
+            primary_channels:
+                - GitHub
+                - GitHub Actions
+        languages:
+            - TypeScript
+            - JavaScript
+        runtime:
+            node:
+                evidence:
+                    - README.md
+                required_major: 14
+        security_defaults:
+            dependency_sources:
+                - Public npm registry
+                - Official GitHub Actions
+            secrets:
+                - Never commit secrets; use environment variables.
+    governance:
+        default_base_policy: org-defaults
+        principles:
+            - 'Repository-first governance: existing code and repoScan-defined rules are authoritative.'
+            - Missing logic is prohibited; implement only what is evidenced in the repository.
+            - Delegation implies non-ownership (e.g., Clerk for auth, Stripe for payments, Convex for persistence/runtime).
+            - Changes must stay within allowed paths for each service; scope creep is forbidden.
+        source_of_truth: DATA.repoScan
+    name: k0renn
+additional_context: ""
