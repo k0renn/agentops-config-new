@@ -1,31 +1,63 @@
 org:
-    description: GitHub-hosted org running TypeScript/JavaScript web applications.
-    engineering_defaults:
-        collaboration:
-            primary_channels:
-                - GitHub
-                - GitHub Actions
-        languages:
-            - TypeScript
-            - JavaScript
-        runtime:
-            node:
-                evidence:
-                    - README.md
-                required_major: 14
-        security_defaults:
-            dependency_sources:
-                - Public npm registry
-                - Official GitHub Actions
-            secrets:
-                - Never commit secrets; use environment variables.
-    governance:
-        default_base_policy: org-defaults
-        principles:
-            - 'Repository-first governance: existing code and repoScan-defined rules are authoritative.'
-            - Missing logic is prohibited; implement only what is evidenced in the repository.
-            - Delegation implies non-ownership (e.g., Clerk for auth, Stripe for payments, Convex for persistence/runtime).
-            - Changes must stay within allowed paths for each service; scope creep is forbidden.
-        source_of_truth: DATA.repoScan
-    name: k0renn
+  description: GitHub-hosted org running TypeScript/JavaScript web applications.
+  engineering_defaults:
+    collaboration:
+      primary_channels:
+        - GitHub
+        - GitHub Actions
+    languages:
+      - TypeScript
+      - JavaScript
+    runtime:
+      node:
+        evidence:
+          - README.md
+        required_major: 14
+    security_defaults:
+      dependency_sources:
+        - Public npm registry
+        - Official GitHub Actions
+      secrets:
+        - Never commit secrets; use environment variables.
+  governance:
+    default_base_policy: org-defaults
+    principles:
+      - 'Repository-first governance: existing code and repoScan-defined rules are authoritative.'
+      - Missing logic is prohibited; implement only what is evidenced in the repository.
+      - Delegation implies non-ownership (e.g., Clerk for auth, Stripe for payments, Convex for persistence/runtime).
+      - Changes must stay within allowed paths for each service; scope creep is forbidden.
+    source_of_truth: DATA.repoScan
+    source_of_truth_rule: DATA.repoScan is the only primary source of truth; existing code is intentional; missing logic is prohibited; delegation implies non-ownership.
+  name: k0renn
+  policy_catalog:
+    default_policy_id: org-defaults
+  rendering:
+    deterministic_instruction_rendering: true
+    values_format:
+      org: values/org.yaml
+      service: services/<service-slug>/values.yaml
+      team: values/teams/<team-slug>.yaml
+  repo_standards:
+    dependency_policy:
+      allowed_sources:
+        - npm (public registry)
+        - Official GitHub Actions (if/when workflows exist)
+      change_control:
+        - New dependencies must be justified and committed with lockfile changes.
+    frameworks_platforms:
+      - Next.js (App Router)
+      - Convex
+      - Clerk
+      - Stripe
+    languages:
+      - TypeScript
+      - JavaScript
+      - CSS
+    security_baselines:
+      auth_delegation:
+        - Authentication is delegated to an external provider when present; do not implement credential handling.
+      payment_delegation:
+        - Payment processing and card data handling is delegated to Stripe when present; do not implement PCI storage/processing.
+      secrets_management:
+        - No secrets committed to repo. Use environment variables.
 additional_context: ""
