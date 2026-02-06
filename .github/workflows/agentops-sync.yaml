@@ -82,6 +82,7 @@ jobs:
             SKILLS_FILE="target-repo/$TARGET_PATH/skill.yaml"
             if [ -f "$SKILLS_FILE" ]; then
               AGENT=$(yq -r '.agent // "codex"' "$SKILLS_FILE")
+              SKILLS_ROOT=$(yq -r '.skills_root // "skilld"' "$SKILLS_FILE")
               INSTALL_LEN=$(yq -r '.install | length' "$SKILLS_FILE" 2>/dev/null || echo 0)
 
               if [ "$INSTALL_LEN" != "0" ]; then
@@ -91,9 +92,19 @@ jobs:
                   SKILL=$(yq -r ".install[$j].skill // \"\"" "$SKILLS_FILE")
 
                   if [ -n "$SOURCE" ] && [ -n "$SKILL" ]; then
-                    (cd target-repo && npx -y skills add "$SOURCE" --skill "$SKILL" -a "$AGENT" -y)
+                    (cd "target-repo/$TARGET_PATH" && npx -y skills add "$SOURCE" --skill "$SKILL" -a "$AGENT" -y)
                   fi
                 done
+              fi
+
+              # Mirror installed skills into the configured skills_root folder (e.g. skilld)
+              if [ -n "$SKILLS_ROOT" ]; then
+                mkdir -p "target-repo/$TARGET_PATH/$SKILLS_ROOT"
+                if [ -d "target-repo/$TARGET_PATH/$AGENT/skills" ]; then
+                  rsync -a --copy-links \
+                    "target-repo/$TARGET_PATH/$AGENT/skills/" \
+                    "target-repo/$TARGET_PATH/$SKILLS_ROOT/"
+                fi
               fi
             fi
 
